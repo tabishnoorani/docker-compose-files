@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  jira:
+    container_name: jira 
+    image: atlassian/jira-software:latest
+    restart: always
+    environment: 
+      - JVM_MINIMUM_MEMORY=4096m
+      - JVM_MAXIMUM_MEMORY=4096m
+      - JVM_RESERVED_CODE_CACHE_SIZE=512m
+    volumes:
+      - ./jira:/var/atlassian/application-data/jira
+    ports:
+      - 8081:8080

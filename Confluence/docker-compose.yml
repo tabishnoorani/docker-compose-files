@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: blacklabelops/postgres
+    restart: always
+    networks:
+      - confluencenet
+    volumes:
+      - ./postgresql:/var/lib/postgresql
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=confluence
+      - POSTGRES_ENCODING=UNICODE
+      - POSTGRES_COLLATE=C
+      - POSTGRES_COLLATE_TYPE=C
+
+  confluence:
+    image: atlassian/confluence-server:latest
+    restart: always
+    depends_on:
+      - "postgres"
+    environment: 
+      - JVM_MINIMUM_MEMORY=4096m
+      - JVM_MAXIMUM_MEMORY=4096m
+      - JVM_RESERVED_CODE_CACHE_SIZE=512m
+    networks:
+      - confluencenet
+    volumes:
+      - ./confluence-home:/var/atlassian/application-data/confluence
+      # - ./confluence-install:/opt/atlassian/confluence
+    ports:
+      - 8090:8090
+
+networks:
+  confluencenet: {}
+
+# JDBC URL: jdbc:postgresql://postgres:5432/confluence
+  
